@@ -1,6 +1,15 @@
 import { useItemPreviewStore } from './store/itemPreviewStore';
 import './App.css';
 
+const rankColors: Record<string, string> = {
+  S: '#d4af37',
+  A: '#c0c7d1',
+  B: '#b67b3f',
+  C: '#d9822b',
+  D: '#5ea264',
+  E: '#4f7ecf',
+};
+
 function App() {
   const name = useItemPreviewStore((state) => state.name);
   const rank = useItemPreviewStore((state) => state.rank);
@@ -15,6 +24,8 @@ function App() {
     .split(',')
     .map((entry) => entry.trim())
     .filter(Boolean).length;
+  const normalizedRank = rank.trim().toUpperCase();
+  const rankColor = rankColors[normalizedRank] ?? '#d7d8dd';
 
   return (
     <main className="app-shell">
@@ -80,12 +91,13 @@ function App() {
                 </div>
 
                 <div className="rank-badge">
-                  <span className="rank-label">Rank</span>
-                  <span className="rank-value font-cinzel">{rank || '-'}</span>
+                  <span className="rank-value font-cinzel" style={{ color: rankColor }}>
+                    {normalizedRank || '-'}
+                  </span>
                 </div>
               </header>
 
-              <p className="item-description">{description}</p>
+              <p className="item-description font-cinzel">{description}</p>
 
               <div className="stats-row">
                 <div className="stat-card">

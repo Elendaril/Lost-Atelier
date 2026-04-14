@@ -1,9 +1,7 @@
 .app-shell {
   min-height: 100svh;
   padding: 40px 24px;
-  background:
-    radial-gradient(circle at top, rgba(246, 201, 120, 0.2), transparent 30%),
-    linear-gradient(180deg, #f9f4e8 0%, #efe4cf 50%, #e1d1b2 100%);
+  background: radial-gradient(circle at top, rgba(246, 201, 120, 0.2), transparent 30%), linear-gradient(180deg, #f9f4e8 0%, #efe4cf 50%, #e1d1b2 100%);
 }
 
 .workbench {
@@ -20,8 +18,7 @@
   overflow: hidden;
   border: 1px solid rgba(132, 93, 37, 0.28);
   border-radius: 28px;
-  background:
-    linear-gradient(180deg, rgba(255, 251, 241, 0.97), rgba(249, 239, 216, 0.94));
+  background: linear-gradient(180deg, rgba(255, 251, 241, 0.97), rgba(249, 239, 216, 0.94));
   box-shadow:
     0 24px 50px rgba(77, 51, 15, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
@@ -149,9 +146,7 @@
   padding: 28px;
   border-radius: 30px;
   text-align: left;
-  background:
-    radial-gradient(circle at top right, rgba(255, 212, 107, 0.42), transparent 34%),
-    linear-gradient(160deg, rgba(255, 249, 239, 0.96), rgba(238, 220, 183, 0.96));
+  background: radial-gradient(circle at top right, rgba(255, 212, 107, 0.42), transparent 34%), linear-gradient(160deg, rgba(255, 249, 239, 0.96), rgba(238, 220, 183, 0.96));
   border: 1px solid rgba(160, 116, 38, 0.36);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.8),
@@ -199,30 +194,37 @@
 }
 
 .rank-badge {
+  position: relative;
   display: grid;
   place-items: center;
-  width: 92px;
+  width: 110px;
   aspect-ratio: 1;
-  border-radius: 26px;
-  background:
-    linear-gradient(135deg, rgba(142, 90, 16, 0.95), rgba(232, 190, 107, 0.98));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    0 12px 20px rgba(122, 76, 11, 0.22);
-  color: #fff8ea;
-  border: 1px solid rgba(116, 69, 5, 0.38);
+  isolation: isolate;
+}
+
+.rank-badge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpath d='M60 4 116 60 60 116 4 60Z' fill='%233c414d' stroke='%23666e7b' stroke-width='4'/%3E%3Cpath d='M60 18 102 60 60 102 18 60Z' fill='none' stroke='%23575f6b' stroke-width='2.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  filter: drop-shadow(0 14px 18px rgba(37, 39, 46, 0.28));
+  z-index: -1;
 }
 
 .rank-label {
-  font-size: 0.7rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  opacity: 0.85;
+  display: none;
 }
 
 .rank-value {
-  font-size: 2.7rem;
+  font-weight: 700;
+  font-size: 3rem;
   line-height: 1;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.18),
+    0 0 16px rgba(255, 214, 128, 0.08);
 }
 
 .item-description {
@@ -231,7 +233,8 @@
   margin: 24px 0;
   color: #4f3c22;
   font-size: 1.02rem;
-  line-height: 1.8;
+  line-height: 1.85;
+  letter-spacing: 0.01em;
 }
 
 .stat-card,
