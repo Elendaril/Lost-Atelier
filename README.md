@@ -1,75 +1,30 @@
-# React + TypeScript + Vite
+# Lost Atelier
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Development
 
-Currently, two official plugins are available:
+- `npm install`
+- `npm run dev`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## GitHub Pages
 
-## React Compiler
+This project includes a GitHub Actions workflow that builds and deploys the app to GitHub Pages on every push to `main`.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### One-time GitHub setup
 
-Note: This will impact Vite dev & build performances.
+1. Open your repository on GitHub.
+2. Go to `Settings` > `Pages`.
+3. Under `Build and deployment`, set `Source` to `GitHub Actions`.
 
-## Expanding the ESLint configuration
+### How deployment works
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- The workflow lives at `.github/workflows/deploy-pages.yml`.
+- Vite reads `BASE_PATH` during the Pages build so assets resolve correctly from `/<repo-name>/`.
+- Every push to `main` triggers a fresh deploy. You can also run it manually from the `Actions` tab.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Local production build
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+For a normal local production build:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
 ```
