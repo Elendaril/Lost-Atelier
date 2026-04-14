@@ -11,6 +11,12 @@
 - The PostCSS plugin is configured in `postcss.config.mjs`.
 - Tailwind is loaded from `src/index.css`, so you can start using utility classes directly in your React components.
 
+## State Management
+
+- Zustand is installed as the app state library.
+- The starter store lives in `src/store/counterStore.ts`.
+- `src/App.tsx` uses the shared counter store instead of local component state.
+
 ## GitHub Pages
 
 This project includes a GitHub Actions workflow that builds and deploys the app to GitHub Pages on every push to `main`.
