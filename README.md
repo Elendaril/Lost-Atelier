@@ -5,6 +5,12 @@
 - `npm install`
 - `npm run dev`
 
+## Tailwind CSS
+
+- Tailwind is installed with PostCSS via `tailwindcss`, `@tailwindcss/postcss`, and `postcss`.
+- The PostCSS plugin is configured in `postcss.config.mjs`.
+- Tailwind is loaded from `src/index.css`, so you can start using utility classes directly in your React components.
+
 ## GitHub Pages
 
 This project includes a GitHub Actions workflow that builds and deploys the app to GitHub Pages on every push to `main`.

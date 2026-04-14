@@ -16,13 +16,13 @@ function App() {
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
         <div>
-          <h1>Get started</h1>
-          <p>
+          <h1 className="text-balance">Get started</h1>
+          <p className="mx-auto max-w-xl text-pretty">
             Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
           </p>
         </div>
         <button
-          className="counter"
+          className="counter transition-transform duration-200 hover:-translate-y-0.5"
           onClick={() => setCount((count) => count + 1)}
         >
           Count is {count}
@@ -37,7 +37,7 @@ function App() {
             <use href="/icons.svg#documentation-icon"></use>
           </svg>
           <h2>Documentation</h2>
-          <p>Your questions, answered</p>
+          <p className="text-pretty">Your questions, answered</p>
           <ul>
             <li>
               <a href="https://vite.dev/" target="_blank">
@@ -58,7 +58,7 @@ function App() {
             <use href="/icons.svg#social-icon"></use>
           </svg>
           <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
+          <p className="text-pretty">Join the Vite community</p>
           <ul>
             <li>
               <a href="https://github.com/vitejs/vite" target="_blank">
