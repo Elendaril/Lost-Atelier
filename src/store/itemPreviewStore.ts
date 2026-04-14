@@ -1,24 +1,18 @@
 import { create } from 'zustand'
+import type { ItemElement, ItemType } from '../types/items'
 
-export const elementKeys = ['fire', 'water', 'wind', 'earth', 'light', 'shadow', 'lightning'] as const
-export type ElementKey = (typeof elementKeys)[number]
-
-export const itemTypeOptions = ['Herb', 'Oil', 'Catalyst', 'Stone', 'Wood', 'Water', 'Beast', 'Metal'] as const
-export type ItemType = (typeof itemTypeOptions)[number]
-
-type Elements = Record<ElementKey, number>
-type TextField = 'name' | 'rank' | 'description'
+type Elements = Record<ItemElement, number>
+type TextField = 'name' | 'description'
 
 type ItemPreviewState = {
   name: string
-  rank: string
   quality: number
   description: string
   elements: Elements
   type: ItemType[]
   setField: (field: TextField, value: string) => void
   setQuality: (value: number) => void
-  setElement: (element: ElementKey, value: number) => void
+  setElement: (element: ItemElement, value: number) => void
   toggleType: (value: ItemType) => void
 }
 
@@ -26,7 +20,6 @@ const clamp = (value: number, min: number, max: number) => Math.min(max, Math.ma
 
 export const useItemPreviewStore = create<ItemPreviewState>((set) => ({
   name: 'Life Stone',
-  rank: 'S',
   quality: 98,
   description:
     'A pulsating, crystalline core that radiates a rhythmic, amber glow, mimicking the steady beat of a heart.',
@@ -37,9 +30,8 @@ export const useItemPreviewStore = create<ItemPreviewState>((set) => ({
     earth: 6,
     light: 5,
     shadow: 0,
-    lightning: 2,
   },
-  type: ['Stone', 'Catalyst'],
+  type: ['stone', 'catalyst'],
   setField: (field, value) => set(() => ({ [field]: value })),
   setQuality: (value) => set(() => ({ quality: clamp(value, 0, 100) })),
   setElement: (element, value) =>
