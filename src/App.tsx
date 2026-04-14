@@ -1,5 +1,22 @@
-import { useItemPreviewStore } from './store/itemPreviewStore';
+import { useState, type CSSProperties } from 'react';
+
+import candlebrightIcon from './assets/icons/candlebright.svg';
+import catalystIcon from './assets/icons/catalyst.svg';
+import clawsIcon from './assets/icons/claws.svg';
+import dropIcon from './assets/icons/drop.svg';
+import eclipseIcon from './assets/icons/eclipse.svg';
+import fluffyCloudIcon from './assets/icons/fluffy-cloud.svg';
+import herbIcon from './assets/icons/herb.svg';
+import peaksIcon from './assets/icons/peaks.svg';
+import polarStarIcon from './assets/icons/polar-star.svg';
+import pouringPotIcon from './assets/icons/pouring-pot.svg';
+import powerLightningIcon from './assets/icons/power-lightning.svg';
+import starSatellitesIcon from './assets/icons/star-satellites.svg';
+import stonePileIcon from './assets/icons/stone-pile.svg';
+import waterBottleIcon from './assets/icons/water-bottle.svg';
+import woodPileIcon from './assets/icons/wood-pile.svg';
 import './App.css';
+import { elementKeys, itemTypeOptions, type ElementKey, type ItemType, useItemPreviewStore } from './store/itemPreviewStore';
 
 const rankColors: Record<string, string> = {
   S: '#d4af37',
@@ -10,7 +27,153 @@ const rankColors: Record<string, string> = {
   E: '#4f7ecf',
 };
 
+const elementConfigs: Record<
+  ElementKey,
+  {
+    label: string;
+    icon: string;
+    descriptor: string;
+    accent: string;
+    surface: string;
+    line: string;
+    glow: string;
+  }
+> = {
+  fire: {
+    label: 'Fire',
+    icon: candlebrightIcon,
+    descriptor: 'Ember',
+    accent: '#d55b2b',
+    surface: 'rgba(255, 224, 204, 0.76)',
+    line: 'rgba(213, 91, 43, 0.28)',
+    glow: 'rgba(213, 91, 43, 0.2)',
+  },
+  water: {
+    label: 'Water',
+    icon: pouringPotIcon,
+    descriptor: 'Flow',
+    accent: '#2f86c5',
+    surface: 'rgba(210, 235, 250, 0.76)',
+    line: 'rgba(47, 134, 197, 0.24)',
+    glow: 'rgba(47, 134, 197, 0.18)',
+  },
+  wind: {
+    label: 'Wind',
+    icon: fluffyCloudIcon,
+    descriptor: 'Gale',
+    accent: '#7aa6b2',
+    surface: 'rgba(227, 241, 244, 0.8)',
+    line: 'rgba(122, 166, 178, 0.24)',
+    glow: 'rgba(122, 166, 178, 0.18)',
+  },
+  earth: {
+    label: 'Earth',
+    icon: peaksIcon,
+    descriptor: 'Stone',
+    accent: '#768a3e',
+    surface: 'rgba(226, 234, 204, 0.8)',
+    line: 'rgba(118, 138, 62, 0.24)',
+    glow: 'rgba(118, 138, 62, 0.16)',
+  },
+  light: {
+    label: 'Light',
+    icon: starSatellitesIcon,
+    descriptor: 'Radiance',
+    accent: '#d6ab39',
+    surface: 'rgba(253, 241, 201, 0.82)',
+    line: 'rgba(214, 171, 57, 0.24)',
+    glow: 'rgba(214, 171, 57, 0.18)',
+  },
+  shadow: {
+    label: 'Shadow',
+    icon: eclipseIcon,
+    descriptor: 'Veil',
+    accent: '#64507d',
+    surface: 'rgba(228, 219, 240, 0.8)',
+    line: 'rgba(100, 80, 125, 0.24)',
+    glow: 'rgba(100, 80, 125, 0.18)',
+  },
+  lightning: {
+    label: 'Lightning',
+    icon: powerLightningIcon,
+    descriptor: 'Spark',
+    accent: '#c89d16',
+    surface: 'rgba(250, 236, 188, 0.82)',
+    line: 'rgba(200, 157, 22, 0.24)',
+    glow: 'rgba(200, 157, 22, 0.18)',
+  },
+};
+
+const typeConfigs: Record<
+  ItemType,
+  {
+    icon: string;
+    accent: string;
+    surface: string;
+    line: string;
+  }
+> = {
+  Herb: {
+    icon: herbIcon,
+    accent: '#5f8d49',
+    surface: 'rgba(231, 241, 223, 0.88)',
+    line: 'rgba(95, 141, 73, 0.24)',
+  },
+  Oil: {
+    icon: dropIcon,
+    accent: '#b16a31',
+    surface: 'rgba(244, 228, 210, 0.88)',
+    line: 'rgba(177, 106, 49, 0.24)',
+  },
+  Catalyst: {
+    icon: catalystIcon,
+    accent: '#7c5ca7',
+    surface: 'rgba(235, 227, 247, 0.88)',
+    line: 'rgba(124, 92, 167, 0.24)',
+  },
+  Stone: {
+    icon: stonePileIcon,
+    accent: '#7a7469',
+    surface: 'rgba(234, 230, 221, 0.9)',
+    line: 'rgba(122, 116, 105, 0.24)',
+  },
+  Wood: {
+    icon: woodPileIcon,
+    accent: '#8d6641',
+    surface: 'rgba(242, 229, 215, 0.9)',
+    line: 'rgba(141, 102, 65, 0.24)',
+  },
+  Water: {
+    icon: waterBottleIcon,
+    accent: '#417fb0',
+    surface: 'rgba(221, 235, 248, 0.9)',
+    line: 'rgba(65, 127, 176, 0.24)',
+  },
+  Beast: {
+    icon: clawsIcon,
+    accent: '#975944',
+    surface: 'rgba(245, 226, 218, 0.9)',
+    line: 'rgba(151, 89, 68, 0.24)',
+  },
+  Metal: {
+    icon: polarStarIcon,
+    accent: '#6f7f95',
+    surface: 'rgba(227, 233, 241, 0.92)',
+    line: 'rgba(111, 127, 149, 0.24)',
+  },
+};
+
+function createToneStyle(accent: string, surface: string, line: string, glow?: string) {
+  return {
+    '--accent': accent,
+    '--surface': surface,
+    '--line': line,
+    '--glow': glow ?? line,
+  } as CSSProperties;
+}
+
 function App() {
+  const [activePreviewType, setActivePreviewType] = useState<ItemType | null>(null);
   const name = useItemPreviewStore((state) => state.name);
   const rank = useItemPreviewStore((state) => state.rank);
   const quality = useItemPreviewStore((state) => state.quality);
@@ -20,12 +183,18 @@ function App() {
   const setField = useItemPreviewStore((state) => state.setField);
   const setQuality = useItemPreviewStore((state) => state.setQuality);
   const setElement = useItemPreviewStore((state) => state.setElement);
-  const classificationCount = type
-    .split(',')
-    .map((entry) => entry.trim())
-    .filter(Boolean).length;
+  const toggleType = useItemPreviewStore((state) => state.toggleType);
+  const classificationCount = type.length;
   const normalizedRank = rank.trim().toUpperCase();
   const rankColor = rankColors[normalizedRank] ?? '#d7d8dd';
+  const selectedTypes = itemTypeOptions.filter((entry) => type.includes(entry));
+  const elementCards = elementKeys.map((key) => ({
+    key,
+    value: elements[key],
+    ...elementConfigs[key],
+  }));
+  const visibleElementCards = elementCards.filter((element) => element.value > 0);
+  const qualityFill = Math.min(100, quality);
 
   return (
     <main className="app-shell">
@@ -33,7 +202,9 @@ function App() {
         <section className="panel editor-panel">
           <span className="eyebrow">Item Forge</span>
           <h1 className="page-title text-balance">Atelier-style item card test page</h1>
-          <p className="page-subtitle text-pretty">Tweak the values on the left and preview a warm, alchemy-inspired JRPG item card on the right.</p>
+          <p className="page-subtitle text-pretty">
+            Tune the draft on the left, then check how the updated icon set, elemental palette, and classification chips feel on the final card.
+          </p>
 
           <div className="editor-grid">
             <div className="field">
@@ -41,37 +212,75 @@ function App() {
               <input id="item-name" value={name} onChange={(event) => setField('name', event.target.value)} />
             </div>
 
-            <div className="field-row">
-              <div className="field">
-                <label htmlFor="item-rank">Rank</label>
-                <input id="item-rank" maxLength={2} value={rank} onChange={(event) => setField('rank', event.target.value.toUpperCase())} />
+              <div className="field-row">
+                <div className="field">
+                  <label htmlFor="item-rank">Rank</label>
+                  <input id="item-rank" maxLength={2} value={rank} onChange={(event) => setField('rank', event.target.value.toUpperCase())} />
+                </div>
+                <div className="field">
+                  <label htmlFor="item-quality">Quality</label>
+                  <input id="item-quality" type="number" min={0} max={100} value={quality} onChange={(event) => setQuality(Number(event.target.value) || 0)} />
+                </div>
               </div>
-              <div className="field">
-                <label htmlFor="item-quality">Quality</label>
-                <input id="item-quality" type="number" min={0} max={999} value={quality} onChange={(event) => setQuality(Number(event.target.value) || 0)} />
-              </div>
-            </div>
 
             <div className="field">
               <label htmlFor="item-description">Description</label>
               <textarea id="item-description" value={description} onChange={(event) => setField('description', event.target.value)} />
             </div>
 
-            <div className="field-row">
-              <div className="field">
-                <label htmlFor="element-light">Light Element</label>
-                <input id="element-light" type="number" min={0} max={9} value={elements.light} onChange={(event) => setElement('light', Number(event.target.value) || 0)} />
+            <div className="field">
+              <label>Elements</label>
+              <div className="element-editor-grid">
+                {elementCards.map((element) => (
+                  <label className="element-editor-card" key={element.key} style={createToneStyle(element.accent, element.surface, element.line, element.glow)}>
+                    <span className="element-editor-head">
+                      <span className="editor-icon-shell">
+                        <img src={element.icon} alt="" aria-hidden="true" className="icon-mark" />
+                      </span>
+                      <span className="element-editor-copy">
+                        <span className="element-editor-name">{element.label}</span>
+                        <span className="element-editor-note">{element.descriptor}</span>
+                      </span>
+                    </span>
+                    <input
+                      className="element-input"
+                      type="number"
+                      min={0}
+                      max={9}
+                      value={element.value}
+                      onChange={(event) => setElement(element.key, Number(event.target.value) || 0)}
+                    />
+                  </label>
+                ))}
               </div>
-              <div className="field">
-                <label htmlFor="element-fire">Fire Element</label>
-                <input id="element-fire" type="number" min={0} max={9} value={elements.fire} onChange={(event) => setElement('fire', Number(event.target.value) || 0)} />
-              </div>
+              <span className="field-note">Each element uses a `0-9` attunement scale.</span>
             </div>
 
             <div className="field">
-              <label htmlFor="item-type">Type</label>
-              <input id="item-type" value={type} onChange={(event) => setField('type', event.target.value)} />
-              <span className="field-note">Use a comma-separated list like `Stone, Catalyst`.</span>
+              <label>Type</label>
+              <div className="type-toggle-grid">
+                {itemTypeOptions.map((itemType) => {
+                  const config = typeConfigs[itemType];
+                  const isActive = type.includes(itemType);
+
+                  return (
+                    <button
+                      key={itemType}
+                      type="button"
+                      className={`type-toggle${isActive ? ' is-active' : ''}`}
+                      style={createToneStyle(config.accent, config.surface, config.line)}
+                      aria-pressed={isActive}
+                      onClick={() => toggleType(itemType)}
+                    >
+                      <span className="editor-icon-shell type-icon-shell">
+                        <img src={config.icon} alt="" aria-hidden="true" className="icon-mark" />
+                      </span>
+                      <span className="type-toggle-label">{itemType}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <span className="field-note">Toggle every classification the item should carry.</span>
             </div>
           </div>
         </section>
@@ -85,9 +294,47 @@ function App() {
 
             <article className="item-card">
               <header className="item-card-header">
-                <div>
+                <div className="item-card-copy">
+                  <div className="item-type-list item-type-list-compact" aria-label="Item classifications">
+                    {selectedTypes.length > 0 ? (
+                      selectedTypes.map((itemType) => {
+                        const config = typeConfigs[itemType];
+                        const isActive = activePreviewType === itemType;
+
+                        return (
+                          <button
+                            type="button"
+                            className={`type-chip-button${isActive ? ' is-active' : ''}`}
+                            key={itemType}
+                            style={createToneStyle(config.accent, config.surface, config.line)}
+                            aria-label={itemType}
+                            aria-pressed={isActive}
+                            onClick={() => setActivePreviewType(isActive ? null : itemType)}
+                          >
+                            <span className="type-pill-icon">
+                              <img src={config.icon} alt="" aria-hidden="true" className="icon-mark" />
+                            </span>
+                          </button>
+                        );
+                      })
+                    ) : (
+                      <span className="empty-state-tag">Choose at least one type</span>
+                    )}
+                  </div>
+                  {activePreviewType ? <div className="type-name-bubble">{activePreviewType}</div> : null}
+
                   <h2 className="item-card-name">{name}</h2>
-                  <p className="item-card-type">{type}</p>
+                  <div className="quality-meter" aria-label={`Quality ${quality} out of 100`}>
+                    <div className="quality-meter-meta">
+                      <span className="quality-icon-shell">
+                        <img src={polarStarIcon} alt="" aria-hidden="true" className="icon-mark" />
+                      </span>
+                      <span className="quality-value">{quality} / 100</span>
+                    </div>
+                    <div className="quality-progress" aria-hidden="true">
+                      <span className="quality-progress-fill" style={{ width: `${qualityFill}%` }} />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="rank-badge">
@@ -101,37 +348,53 @@ function App() {
 
               <div className="stats-row">
                 <div className="stat-card">
-                  <span className="stat-label">Quality</span>
-                  <span className="stat-value">{quality}</span>
-                </div>
-                <div className="stat-card">
                   <span className="stat-label">Classification</span>
                   <span className="stat-value">{classificationCount}</span>
+                </div>
+                <div className="stat-card">
+                  <span className="stat-label">Elements</span>
+                  <span className="stat-value">{visibleElementCards.length}</span>
                 </div>
               </div>
 
               <section className="elements-section" aria-label="Item elements">
-                <span className="stat-label">Elements</span>
+                <div className="section-heading">
+                  <span className="stat-label">Elements</span>
+                  <span className="section-note">Attunement lattice</span>
+                </div>
+
                 <div className="element-list">
-                  <div className="element-pill">
-                    <span className="element-gem element-light">{elements.light}</span>
-                    <div>
-                      <div className="element-name">Light</div>
-                      <div className="element-value">Radiance</div>
+                  {visibleElementCards.length > 0 ? (
+                    visibleElementCards.map((element) => (
+                      <div
+                        className="element-pill"
+                        key={element.key}
+                        style={createToneStyle(element.accent, element.surface, element.line, element.glow)}
+                      >
+                        <span className="element-pill-icon">
+                          <img src={element.icon} alt="" aria-hidden="true" className="icon-mark" />
+                        </span>
+                        <div className="element-copy">
+                          <div className="element-name">{element.label}</div>
+                          <div className="element-value">{element.descriptor}</div>
+                        </div>
+                        <span className="element-score">{element.value}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div
+                      className="empty-state-tag empty-state-block"
+                    >
+                      No elemental attunement
                     </div>
-                  </div>
-                  <div className="element-pill">
-                    <span className="element-gem element-fire">{elements.fire}</span>
-                    <div>
-                      <div className="element-name">Fire</div>
-                      <div className="element-value">Ember</div>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </section>
             </article>
 
-            <div className="preview-note">This mock preview leans into a warm, handcrafted alchemy-JRPG mood so we can quickly iterate on hierarchy, ornament, and readability.</div>
+            <div className="preview-note">
+              The preview now leans on icon-led classification badges and a full elemental spectrum so it’s easier to read item identity at a glance.
+            </div>
           </div>
         </section>
       </div>

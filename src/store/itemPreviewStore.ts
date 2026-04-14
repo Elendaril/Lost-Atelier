@@ -1,11 +1,13 @@
 import { create } from 'zustand'
 
-type Elements = {
-  light: number
-  fire: number
-}
+export const elementKeys = ['fire', 'water', 'wind', 'earth', 'light', 'shadow', 'lightning'] as const
+export type ElementKey = (typeof elementKeys)[number]
 
-type TextField = 'name' | 'rank' | 'description' | 'type'
+export const itemTypeOptions = ['Herb', 'Oil', 'Catalyst', 'Stone', 'Wood', 'Water', 'Beast', 'Metal'] as const
+export type ItemType = (typeof itemTypeOptions)[number]
+
+type Elements = Record<ElementKey, number>
+type TextField = 'name' | 'rank' | 'description'
 
 type ItemPreviewState = {
   name: string
@@ -13,30 +15,42 @@ type ItemPreviewState = {
   quality: number
   description: string
   elements: Elements
-  type: string
+  type: ItemType[]
   setField: (field: TextField, value: string) => void
   setQuality: (value: number) => void
-  setElement: (element: keyof Elements, value: number) => void
+  setElement: (element: ElementKey, value: number) => void
+  toggleType: (value: ItemType) => void
 }
+
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
 
 export const useItemPreviewStore = create<ItemPreviewState>((set) => ({
   name: 'Life Stone',
   rank: 'S',
   quality: 98,
   description:
-    'A pulsating, crystalline core that radiates a rhythmic, amber glow, mimicking the steady beat of a heart',
+    'A pulsating, crystalline core that radiates a rhythmic, amber glow, mimicking the steady beat of a heart.',
   elements: {
-    light: 2,
-    fire: 1,
+    fire: 3,
+    water: 1,
+    wind: 0,
+    earth: 6,
+    light: 5,
+    shadow: 0,
+    lightning: 2,
   },
-  type: 'Stone, Catalyst',
+  type: ['Stone', 'Catalyst'],
   setField: (field, value) => set(() => ({ [field]: value })),
-  setQuality: (value) => set(() => ({ quality: value })),
+  setQuality: (value) => set(() => ({ quality: clamp(value, 0, 100) })),
   setElement: (element, value) =>
     set((state) => ({
       elements: {
         ...state.elements,
-        [element]: value,
+        [element]: clamp(value, 0, 9),
       },
+    })),
+  toggleType: (value) =>
+    set((state) => ({
+      type: state.type.includes(value) ? state.type.filter((entry) => entry !== value) : [...state.type, value],
     })),
 }))
